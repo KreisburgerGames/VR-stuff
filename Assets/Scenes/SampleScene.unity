@@ -824,10 +824,18 @@ PrefabInstance:
       propertyPath: m_InteractionManager
       value: 
       objectReference: {fileID: 1291441987}
+    - target: {fileID: 851878102466875641, guid: 23c7613e2a50762429a7b59f576580bd, type: 3}
+      propertyPath: m_SelectInput.m_InputActionReferenceValue
+      value: 
+      objectReference: {fileID: 187161793506945269, guid: c348712bda248c246b8c49b3db54643f, type: 3}
     - target: {fileID: 3411339714878237458, guid: 23c7613e2a50762429a7b59f576580bd, type: 3}
       propertyPath: m_InteractionManager
       value: 
       objectReference: {fileID: 1291441987}
+    - target: {fileID: 3411339714878237458, guid: 23c7613e2a50762429a7b59f576580bd, type: 3}
+      propertyPath: m_SelectInput.m_InputActionReferenceValue
+      value: 
+      objectReference: {fileID: 187161793506945269, guid: c348712bda248c246b8c49b3db54643f, type: 3}
     - target: {fileID: 4555077539798188382, guid: 23c7613e2a50762429a7b59f576580bd, type: 3}
       propertyPath: m_Name
       value: XR Origin (XR Rig)
