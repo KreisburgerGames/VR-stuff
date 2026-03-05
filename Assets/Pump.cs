@@ -2,6 +2,7 @@ using UnityEditor.XR.Interaction.Toolkit.Interactables;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 public class Pump : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class Pump : MonoBehaviour
     public bool locked = true;
     private Vector3 defaultPos;
     public Vector3 rackBackMaxPos;
+    private InteractorHandedness handedness;
 
     void Start()
     {
@@ -21,9 +23,18 @@ public class Pump : MonoBehaviour
     {
         if (xRGrab.interactorsSelecting.Count == 2)
         {
+            handedness = xRGrab.interactorsSelecting[0].handedness;
             currentHand = selectEvent.interactorObject.transform;
             relativeOriginPos = referencePoint.transform.InverseTransformPoint(currentHand.position);
             locked = false;
+        }
+    }
+
+    public void OnTriggerPull(ActivateEventArgs act)
+    {
+        if(act.interactorObject.handedness == handedness)
+        {
+            print("shoot");
         }
     }
     
