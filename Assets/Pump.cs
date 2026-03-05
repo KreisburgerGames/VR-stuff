@@ -22,7 +22,6 @@ public class Pump : MonoBehaviour
         if (xRGrab.interactorsSelecting.Count == 2)
         {
             currentHand = selectEvent.interactorObject.transform;
-            print(currentHand.localPosition);
             relativeOriginPos = referencePoint.transform.InverseTransformPoint(currentHand.position);
             locked = false;
         }
@@ -37,9 +36,7 @@ public class Pump : MonoBehaviour
     {
         if(!locked)
         {
-            print(transform.lossyScale.z);
             float displacement = referencePoint.transform.InverseTransformPoint(currentHand.position).y - relativeOriginPos.y;
-            print(displacement);
             displacement = Mathf.Clamp(displacement, 0, defaultPos.z - rackBackMaxPos.z);
             transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, defaultPos.z - displacement);
         }
