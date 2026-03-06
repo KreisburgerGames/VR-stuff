@@ -66,7 +66,6 @@ public class Pump : MonoBehaviour
             {
                 float displacement = referencePoint.transform.InverseTransformPoint(currentHand.position).y - relativeOriginPos.y;
                 displacement = Mathf.Clamp(displacement, 0, defaultPos.z - rackBackMaxPos.z);
-                print(displacement + " " + (defaultPos.z - rackBackMaxPos.z));
                 if (MathF.Round(displacement, 5) == MathF.Round(defaultPos.z - rackBackMaxPos.z, 5))
                 {
                     back = true;

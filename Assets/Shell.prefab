@@ -151,4 +151,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7b9834929741464c9781949b0329e03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  waitPeriod: 0.2
+  waitPeriod: 0.05

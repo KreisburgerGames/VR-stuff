@@ -16,6 +16,7 @@ public class Shell : MonoBehaviour
     {
         yield return new WaitForSeconds(waitPeriod);
         boxCol.isTrigger = false;
+        print("done");
     }
 
     void Update()
