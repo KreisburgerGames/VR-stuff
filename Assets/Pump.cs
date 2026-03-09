@@ -27,12 +27,14 @@ public class Pump : MonoBehaviour
     private float backDisplacement = 99f;
     public bool canShoot = false;
     private Animator nextShellAnimator;
+    public GameObject nextShell;
 
     void Start()
     {
         defaultPos = transform.localPosition;
         game = FindFirstObjectByType<Game>();
         nextShellAnimator = GetComponent<Animator>();
+        nextShell.SetActive(false);
     }
     public void SetFirstPos(SelectEnterEventArgs selectEvent)
     {
@@ -59,6 +61,7 @@ public class Pump : MonoBehaviour
             }
             locked = false;
             chambered = false;
+            nextShell.SetActive(true);
         }
     }
     
@@ -75,6 +78,7 @@ public class Pump : MonoBehaviour
             {
                 float displacement = referencePoint.transform.InverseTransformPoint(currentHand.position).y - relativeOriginPos.y;
                 displacement = Mathf.Clamp(displacement, 0, defaultPos.z - rackBackMaxPos.z);
+                nextShellAnimator.SetFloat("backPos", 0);
                 if(shellObj != null && transform.localPosition.z <= ejectZ)
                 {
                     shellObj.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
@@ -103,6 +107,10 @@ public class Pump : MonoBehaviour
                 };
                 displacement = Mathf.Clamp(displacement, 0, backDisplacement);
                 transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, defaultPos.z - displacement);
+                float currentPumpDisplacement = transform.localPosition.z - rackBackMaxPos.z;
+                float maxDisplacement = rackBackMaxPos.x - rackBackMaxPos.z;
+                nextShellAnimator.SetFloat("backPos", currentPumpDisplacement/maxDisplacement);
+                print(currentPumpDisplacement/maxDisplacement);
                 if(MathF.Round(displacement, 5) == 0)
                 {
                     back = false;
@@ -112,6 +120,7 @@ public class Pump : MonoBehaviour
                     {
                         Chamber();
                     }
+                    nextShell.SetActive(false);
                     game.state = Game.State.ReturnToPosition;
                 }
             }
