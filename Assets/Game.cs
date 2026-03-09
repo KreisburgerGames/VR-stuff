@@ -24,6 +24,7 @@ public class Game : MonoBehaviour
     public List<GameObject> enemyItems = new List<GameObject>();
     public int blankShellsLeft, liveShellsLeft;
     public bool doesHeKnow = false;
+    public Enemy enemy;
 
     public enum State
     {

@@ -26,11 +26,13 @@ public class Pump : MonoBehaviour
     private bool back = false;
     private float backDisplacement = 99f;
     public bool canShoot = false;
+    private Animator nextShellAnimator;
 
     void Start()
     {
         defaultPos = transform.localPosition;
         game = FindFirstObjectByType<Game>();
+        nextShellAnimator = GetComponent<Animator>();
     }
     public void SetFirstPos(SelectEnterEventArgs selectEvent)
     {
