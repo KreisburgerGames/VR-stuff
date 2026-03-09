@@ -70,6 +70,19 @@ public class Pump : MonoBehaviour
         locked = true;
     }
 
+    public void Eject()
+    {
+        shellObj.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+        shellObj.GetComponent<Rigidbody>().isKinematic = false;
+        shellObj.GetComponent<Rigidbody>().useGravity = true;
+        shellObj.GetComponent<BoxCollider>().enabled = true;
+        shellObj.transform.parent = null;
+        shellObj.GetComponent<Rigidbody>().AddForce(shellEjectPoint.right * UnityEngine.Random.Range(2f, 4f), ForceMode.Impulse);
+        shellObj.GetComponent<Rigidbody>().AddTorque(shellEjectPoint.up * UnityEngine.Random.Range(-20f, 20f), ForceMode.Impulse);
+        shellObj = null;
+        game.shellObjs.RemoveAt(0);
+    }
+
     void Update()
     {
         if(!locked && xRGrab.interactorsSelecting.Count == 2)
@@ -81,18 +94,11 @@ public class Pump : MonoBehaviour
                 nextShellAnimator.SetFloat("backPos", 0);
                 if(shellObj != null && transform.localPosition.z <= ejectZ)
                 {
-                    shellObj.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
-                    shellObj.GetComponent<Rigidbody>().isKinematic = false;
-                    shellObj.GetComponent<Rigidbody>().useGravity = true;
-                    shellObj.GetComponent<BoxCollider>().enabled = true;
-                    shellObj.transform.parent = null;
-                    shellObj.GetComponent<Rigidbody>().AddForce(shellEjectPoint.right * UnityEngine.Random.Range(2f, 4f), ForceMode.Impulse);
-                    shellObj.GetComponent<Rigidbody>().AddTorque(shellEjectPoint.up * UnityEngine.Random.Range(-20f, 20f), ForceMode.Impulse);
-                    shellObj = null;
-                    game.shellObjs.RemoveAt(0);
+                    Eject();
                 }
                 if (MathF.Round(displacement, 5) == MathF.Round(defaultPos.z - rackBackMaxPos.z, 5))
                 {
+                    if(shellObj != null) Eject();
                     back = true;
                 }
                 transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, defaultPos.z - displacement);
