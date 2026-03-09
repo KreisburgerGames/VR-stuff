@@ -8,6 +8,7 @@ using UnityEngine.XR.Interaction.Toolkit.Interactors;
 public class Pump : MonoBehaviour
 {
     private Vector3 relativeOriginPos;
+    private Game game;
     public GameObject referencePoint;
     private Transform currentHand;
     public XRGrabInteractable xRGrab;
@@ -20,12 +21,16 @@ public class Pump : MonoBehaviour
     public GameObject shellPrefab;
     public Mesh spentShellMesh;
     public Transform shellEjectPoint;
+    public float ejectZ;
+    public Transform maxHold, MinHold;
     private bool back = false;
     private float backDisplacement = 99f;
+    public bool canShoot = false;
 
     void Start()
     {
         defaultPos = transform.localPosition;
+        game = FindFirstObjectByType<Game>();
     }
     public void SetFirstPos(SelectEnterEventArgs selectEvent)
     {
@@ -40,13 +45,15 @@ public class Pump : MonoBehaviour
 
     public void OnTriggerPull(ActivateEventArgs act)
     {
-        if(act.interactorObject.handedness == handedness && chambered)
+        if(act.interactorObject.handedness == handedness && chambered && canShoot)
         {
-            print("shoot");
+            canShoot = false;
             relativeOriginPos = referencePoint.transform.InverseTransformPoint(currentHand.position);
+            relativeOriginPos.y = Mathf.Clamp(relativeOriginPos.y, MinHold.localPosition.z, maxHold.localPosition.z);
             if(shellObj != null)
             {
                 shellObj.GetComponent<MeshFilter>().mesh = spentShellMesh;
+                shellObj.GetComponent<Shell>().RevealShell();
             }
             locked = false;
             chambered = false;
@@ -60,25 +67,27 @@ public class Pump : MonoBehaviour
 
     void Update()
     {
-        if(!locked)
+        if(!locked && xRGrab.interactorsSelecting.Count == 2)
         {
             if(!back)
             {
                 float displacement = referencePoint.transform.InverseTransformPoint(currentHand.position).y - relativeOriginPos.y;
                 displacement = Mathf.Clamp(displacement, 0, defaultPos.z - rackBackMaxPos.z);
+                if(shellObj != null && transform.localPosition.z <= ejectZ)
+                {
+                    shellObj.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+                    shellObj.GetComponent<Rigidbody>().isKinematic = false;
+                    shellObj.GetComponent<Rigidbody>().useGravity = true;
+                    shellObj.GetComponent<BoxCollider>().enabled = true;
+                    shellObj.transform.parent = null;
+                    shellObj.GetComponent<Rigidbody>().AddForce(shellEjectPoint.right * UnityEngine.Random.Range(2f, 4f), ForceMode.Impulse);
+                    shellObj.GetComponent<Rigidbody>().AddTorque(shellEjectPoint.up * UnityEngine.Random.Range(-20f, 20f), ForceMode.Impulse);
+                    shellObj = null;
+                    game.shellObjs.RemoveAt(0);
+                }
                 if (MathF.Round(displacement, 5) == MathF.Round(defaultPos.z - rackBackMaxPos.z, 5))
                 {
                     back = true;
-                    if(shellObj != null)
-                    {
-                        shellObj.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
-                        shellObj.GetComponent<Rigidbody>().isKinematic = false;
-                        shellObj.GetComponent<Rigidbody>().useGravity = true;
-                        shellObj.GetComponent<BoxCollider>().enabled = true;
-                        shellObj.transform.parent = null;
-                        shellObj.GetComponent<Rigidbody>().AddForce(shellEjectPoint.right * 4f, ForceMode.Impulse);
-                        shellObj.GetComponent<Rigidbody>().AddTorque(shellEjectPoint.up * UnityEngine.Random.Range(-2f, 2f), ForceMode.Impulse);
-                    }
                 }
                 transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, defaultPos.z - displacement);
             }
@@ -97,17 +106,25 @@ public class Pump : MonoBehaviour
                     back = false;
                     locked = true;
                     backDisplacement = 99f;
-                    if (!chambered)
+                    if (!chambered && game.shellObjs.Count > 0)
                     {
-                        chambered = true;
-                        shellObj = Instantiate(shellPrefab, transform.position, transform.rotation);
-                        shellObj.transform.parent = shellEjectPoint;
-                        shellObj.transform.localPosition = Vector3.zero;
-                        shellObj.transform.localEulerAngles = Vector3.zero;
+                        Chamber();
                     }
+                    game.state = Game.State.ReturnToPosition;
                 }
             }
         }
     }
 
+    public void Chamber()
+    {
+        chambered = true;
+        locked = true;
+        back = false;
+        backDisplacement = 99f;
+        shellObj = game.shellObjs[0];
+        shellObj.transform.parent = shellEjectPoint;
+        shellObj.transform.localPosition = Vector3.zero;
+        shellObj.transform.localEulerAngles = Vector3.zero;
+    }
 }

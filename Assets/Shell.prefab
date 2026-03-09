@@ -152,3 +152,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   waitPeriod: 0.05
+  blankMat: {fileID: 2100000, guid: cd10cd4933933b64b90f817f26127c3b, type: 2}
+  blank: 0
