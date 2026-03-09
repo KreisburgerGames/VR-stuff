@@ -89,6 +89,7 @@ public class Game : MonoBehaviour
                 }
                 StartCoroutine(ShowShells());
                 state = State.Wait;
+                pump.nextShell.SetActive(true);
             }
             if(state == State.LoadingShells)
             {

@@ -61,7 +61,6 @@ public class Pump : MonoBehaviour
             }
             locked = false;
             chambered = false;
-            nextShell.SetActive(true);
         }
     }
     
@@ -126,7 +125,7 @@ public class Pump : MonoBehaviour
                     {
                         Chamber();
                     }
-                    nextShell.SetActive(false);
+                    nextShellAnimator.SetFloat("backPos", 0);
                     game.state = Game.State.ReturnToPosition;
                 }
             }
@@ -143,5 +142,7 @@ public class Pump : MonoBehaviour
         shellObj.transform.parent = shellEjectPoint;
         shellObj.transform.localPosition = Vector3.zero;
         shellObj.transform.localEulerAngles = Vector3.zero;
+        if(game.shellObjs.Count > 1) nextShell.SetActive(true);
+        else nextShell.SetActive(false);
     }
 }
