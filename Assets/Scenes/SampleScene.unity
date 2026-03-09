@@ -3394,6 +3394,14 @@ PrefabInstance:
       value: -1.6599646
       objectReference: {fileID: 0}
     - target: {fileID: 6883159716418251512, guid: bf6e0fffdcdaada40acddd9425441afe, type: 3}
+      propertyPath: m_InteractionManager
+      value: 
+      objectReference: {fileID: 1291441987}
+    - target: {fileID: 6883159716418251512, guid: bf6e0fffdcdaada40acddd9425441afe, type: 3}
+      propertyPath: m_ForceGravityOnDetach
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6883159716418251512, guid: bf6e0fffdcdaada40acddd9425441afe, type: 3}
       propertyPath: 'm_Colliders.Array.data[1]'
       value: 
       objectReference: {fileID: 7096463066263577549}
