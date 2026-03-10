@@ -2,18 +2,21 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class ShotgunAnimation : MonoBehaviour
 {
     [SerializeField] private InputActionReference triggerActionReference;
-    public GameObject rightHand, leftHand;
+    public GameObject rightHandPrimary, leftHandPrimary;
     public GameObject rightController, leftController;
-
+    private XRGrabInteractable grab;
+    public Pump pump;
     private Animator animator;
 
     void Start()
     {
         animator = GetComponent<Animator>();
+        grab = GetComponent<XRGrabInteractable>();
     }
 
     void Update()
@@ -27,27 +30,39 @@ public class ShotgunAnimation : MonoBehaviour
     {
         if(args.interactorObject.handedness == UnityEngine.XR.Interaction.Toolkit.Interactors.InteractorHandedness.Right)
         {
-            rightHand.SetActive(true);
+            rightHandPrimary.SetActive(true);
             rightController.SetActive(false);
         }
         else if(args.interactorObject.handedness == UnityEngine.XR.Interaction.Toolkit.Interactors.InteractorHandedness.Left)
         {
-            leftHand.SetActive(true);
+            leftHandPrimary.SetActive(true);
             leftController.SetActive(false);
         }
+    }
+
+    private void Drop()
+    {
+        rightHandPrimary.SetActive(false);
+        rightController.SetActive(true);
+        leftHandPrimary.SetActive(false);
+        leftController.SetActive(true);
+        grab.enabled = false;
+        grab.enabled = true;
     }
 
     public void Deselected(SelectExitEventArgs args)
     {
         if(args.interactorObject.handedness == UnityEngine.XR.Interaction.Toolkit.Interactors.InteractorHandedness.Right)
         {
-            rightHand.SetActive(false);
+            rightHandPrimary.SetActive(false);
             rightController.SetActive(true);
+            if(pump.handedness == UnityEngine.XR.Interaction.Toolkit.Interactors.InteractorHandedness.Right && grab.interactorsSelecting.Count == 1) Drop(); 
         }
         else if(args.interactorObject.handedness == UnityEngine.XR.Interaction.Toolkit.Interactors.InteractorHandedness.Left)
         {
-            leftHand.SetActive(false);
+            leftHandPrimary.SetActive(false);
             leftController.SetActive(true);
+            if(pump.handedness == UnityEngine.XR.Interaction.Toolkit.Interactors.InteractorHandedness.Left && grab.interactorsSelecting.Count == 1) Drop(); 
         }
     }
 }

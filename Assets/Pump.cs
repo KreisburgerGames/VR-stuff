@@ -13,7 +13,7 @@ public class Pump : MonoBehaviour
     private Animator nextShellAnimator;
     private Transform currentHand;
     private Vector3 defaultPos;
-    private InteractorHandedness handedness;
+    public InteractorHandedness handedness;
     private bool chambered = false;
     private GameObject shellObj;
     private bool back = false;
