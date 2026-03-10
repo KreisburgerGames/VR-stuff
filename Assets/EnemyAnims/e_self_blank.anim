@@ -1474,7 +1474,7 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 2.0333333
+  - time: 2.05
     functionName: EjectShell
     data: 
     objectReferenceParameter: {fileID: 0}
