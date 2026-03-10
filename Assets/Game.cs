@@ -147,11 +147,13 @@ public class Game : MonoBehaviour
         shotgunGrab.gameObject.GetComponent<Highlight>().OnFirstHoverExited(null);
         while(timer < 2f)
         {
-            shotgun.transform.position = Vector3.Lerp(shotgun.transform.position, ShotgunDefaultPos.position, timer);
-            shotgun.transform.rotation = Quaternion.Lerp(shotgun.transform.rotation, ShotgunDefaultPos.rotation, timer);
+            shotgun.transform.position = Vector3.Lerp(shotgun.transform.position, ShotgunDefaultPos.position, timer/2f);
+            shotgun.transform.rotation = Quaternion.Lerp(shotgun.transform.rotation, ShotgunDefaultPos.rotation, timer/2f);
             timer += Time.deltaTime;
             yield return null;
         }
+        shotgun.transform.position = ShotgunDefaultPos.position;
+        shotgun.transform.rotation = ShotgunDefaultPos.rotation;
         state = toState;
     }
 
