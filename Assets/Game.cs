@@ -45,26 +45,31 @@ public class Game : MonoBehaviour
 
     IEnumerator ShowShells()
     {
+        // Shells are currently shown when it reaches here
         yield return new WaitForSeconds(3f);
         foreach(GameObject shell in shellObjs)
         {
+            // "Invisible"
             shell.transform.position = new Vector3(shell.transform.position.x, shell.transform.position.y - 5f, shell.transform.position.z);
-            shell.GetComponent<Shell>().Hide();
+            shell.GetComponent<Shell>().Hide(); // Sets their base color on the material to black which hides if their blank or not
         }
-        GameObject[] s = (GameObject[])ArrayExtensionMethods.Shuffle(shellObjs.ToArray());
+        GameObject[] s = (GameObject[])ArrayExtensionMethods.Shuffle(shellObjs.ToArray()); // Took me to long on how to find how to do this
         shellObjs = s.ToList();
-        pump.Chamber();
         state = State.PlayerShooting;
     }
 
     void Update()
     {
-        if(state != oldState)
+        if(state != oldState) // Only runs ONCE per state change
         {
             oldState = state;
             if(state == State.Start)
             {
-                int shellGen = Random.Range(shellsMin + round, shellsMax + round);
+                // Choose between 4 and 8 shells but slightly influenced off what round it is
+                int min = shellsMin + round; int max = shellsMax + round;
+                min = Mathf.Clamp(min, 3, 4);
+                max = Mathf.Clamp(max, 4, 8);
+                int shellGen = Random.Range(min, max + 1);
                 for(int i = 0; i < shellGen; i++)
                 {
                     GameObject shell = Instantiate(shellPrefab, shellsPoint.position, Quaternion.identity);
@@ -73,6 +78,7 @@ public class Game : MonoBehaviour
                     shell.transform.position = new Vector3(shell.transform.position.x + shellsOffset * i, shell.transform.position.y, shell.transform.position.z);
                     shellObjs.Add(shell);
                 }
+                // Ensure at least one shell is live
                 bool oneIsLive = false;
                 foreach(GameObject shell in shellObjs)
                 {
@@ -96,21 +102,25 @@ public class Game : MonoBehaviour
             }
             else if(state == State.PlayerShooting)
             {
+                // State can be landed on with 0 shells
                 if(shellObjs.Count == 0)
                 {
                     StartCoroutine(ReturnToPosition(State.ItemsGiving));
                     return;
                 }
+                // Prepare the shotgun for the player's turn
                 pump.Chamber();
                 shotgunGrab.enabled = true;
                 pump.canShoot = true;
             }
             else if(state == State.ReturnToPosition)
             {
+                // State should only be directly set to this for the end of a player's turn
                 StartCoroutine(ReturnToPosition(State.EnemyShooting));
             }
             else if(state == State.EnemyShooting)
             {
+                // Can also be 0 when set to this state
                 if(shellObjs.Count > 0)
                 {
                     StartCoroutine(EvaluateTurn());
@@ -122,6 +132,7 @@ public class Game : MonoBehaviour
             }
             else if(state == State.ItemsGiving)
             {
+                // Doesn't really exist yet
                 round++;
                 state = State.Start;
             }
@@ -146,6 +157,7 @@ public class Game : MonoBehaviour
 
     public void EvalAgain()
     {
+        // Called when the dealer shoots a blank at himself
         StartCoroutine(EvaluateTurn());
     }
 
@@ -164,7 +176,6 @@ public class Game : MonoBehaviour
                 liveShellsLeft++;
             }
         }
-        print("evaluating turn");
         if(enemyItems.Count > 0)
         {
             

@@ -22,6 +22,7 @@ public class ShotgunAnimation : MonoBehaviour
         animator.SetFloat("Trigger", triggerValue);
     }
 
+    // Only right handed supported currently
     public void Selected(SelectEnterEventArgs args)
     {
         if(args.interactorObject.handedness == UnityEngine.XR.Interaction.Toolkit.Interactors.InteractorHandedness.Right)
