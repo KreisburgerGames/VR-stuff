@@ -165,6 +165,7 @@ public class Game : MonoBehaviour
     {
         blankShellsLeft = 0;
         liveShellsLeft = 0;
+        // Count shells
         foreach(GameObject shell in shellObjs)
         {
             if(shell.GetComponent<Shell>().blank)
@@ -178,12 +179,15 @@ public class Game : MonoBehaviour
         }
         if(enemyItems.Count > 0)
         {
-            
+            // Use items and re-evaluate
+            yield return StartCoroutine(EvaluateTurn());
+            yield break;
         }
-        else if(shellObjs.Count > 0)
+        else if(shellObjs.Count > 0) // Can also be called at 0 shells on a re-evaluation
         {
+            // pacing ig
             yield return new WaitForSeconds(2f);
-            if(doesHeKnow)
+            if(doesHeKnow) // yes this is a reference
             {
                 if(shellObjs[0].GetComponent<Shell>().blank)
                 {
@@ -196,6 +200,7 @@ public class Game : MonoBehaviour
             }
             else
             {
+                // Calculate chances of live shell
                 int totalShells = blankShellsLeft + liveShellsLeft;
                 float shotChance = (float)liveShellsLeft / totalShells;
                 if(Random.Range(0f, 1f) <= shotChance)
@@ -210,7 +215,7 @@ public class Game : MonoBehaviour
         }
         else
         {
-            StartCoroutine(ReturnToPosition(State.ItemsGiving));
+            yield return StartCoroutine(ReturnToPosition(State.ItemsGiving));
         }
     }
 }
