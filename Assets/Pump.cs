@@ -115,16 +115,11 @@ public class Pump : MonoBehaviour
                 float currentPumpDisplacement = transform.localPosition.z - rackBackMaxPos.z;
                 float maxDisplacement = rackBackMaxPos.x - rackBackMaxPos.z;
                 nextShellAnimator.SetFloat("backPos", currentPumpDisplacement/maxDisplacement);
-                print(currentPumpDisplacement/maxDisplacement);
                 if(MathF.Round(displacement, 5) == 0)
                 {
                     back = false;
                     locked = true;
                     backDisplacement = 99f;
-                    if (!chambered && game.shellObjs.Count > 0)
-                    {
-                        Chamber();
-                    }
                     nextShellAnimator.SetFloat("backPos", 0);
                     game.state = Game.State.ReturnToPosition;
                 }
@@ -142,6 +137,7 @@ public class Pump : MonoBehaviour
         shellObj.transform.parent = shellEjectPoint;
         shellObj.transform.localPosition = Vector3.zero;
         shellObj.transform.localEulerAngles = Vector3.zero;
+        shellObj.SetActive(true);
         if(game.shellObjs.Count > 1) nextShell.SetActive(true);
         else nextShell.SetActive(false);
     }

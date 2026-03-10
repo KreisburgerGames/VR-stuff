@@ -68,8 +68,7 @@ public class Game : MonoBehaviour
                 for(int i = 0; i < shellGen; i++)
                 {
                     GameObject shell = Instantiate(shellPrefab, shellsPoint.position, Quaternion.identity);
-                    if (Random.Range(0, 2) == 0) {shell.GetComponent<Shell>().blank = true; blankShellsLeft++;}
-                    else liveShellsLeft++;
+                    if (Random.Range(0, 2) == 0) shell.GetComponent<Shell>().blank = true;
                     shell.transform.parent = shellsPoint;
                     shell.transform.position = new Vector3(shell.transform.position.x + shellsOffset * i, shell.transform.position.y, shell.transform.position.z);
                     shellObjs.Add(shell);
@@ -102,6 +101,7 @@ public class Game : MonoBehaviour
                     StartCoroutine(ReturnToPosition(State.ItemsGiving));
                     return;
                 }
+                pump.Chamber();
                 shotgunGrab.enabled = true;
                 pump.canShoot = true;
             }
@@ -144,25 +144,43 @@ public class Game : MonoBehaviour
         state = toState;
     }
 
+    public void EvalAgain()
+    {
+        StartCoroutine(EvaluateTurn());
+    }
+
     private IEnumerator EvaluateTurn()
     {
+        blankShellsLeft = 0;
+        liveShellsLeft = 0;
+        foreach(GameObject shell in shellObjs)
+        {
+            if(shell.GetComponent<Shell>().blank)
+            {
+                blankShellsLeft++;
+            }
+            else
+            {
+                liveShellsLeft++;
+            }
+        }
+        print("evaluating turn");
         if(enemyItems.Count > 0)
         {
             
-            StartCoroutine(EvaluateTurn());
         }
-        else
+        else if(shellObjs.Count > 0)
         {
             yield return new WaitForSeconds(2f);
             if(doesHeKnow)
             {
                 if(shellObjs[0].GetComponent<Shell>().blank)
                 {
-                    // Shoot self
+                    yield return StartCoroutine(enemy.ShootSelf());
                 }
                 else
                 {
-                   // Shoot player
+                    yield return StartCoroutine(enemy.ShootPlayer());
                 }
             }
             else
@@ -171,21 +189,17 @@ public class Game : MonoBehaviour
                 float shotChance = (float)liveShellsLeft / totalShells;
                 if(Random.Range(0f, 1f) <= shotChance)
                 {
-                    // Shoot player
+                    yield return StartCoroutine(enemy.ShootPlayer());
                 }
                 else
                 {
-                    // Shoot self
+                    yield return StartCoroutine(enemy.ShootSelf());
                 }
             }
-            if(shellObjs.Count > 0)
-            {
-                state = State.PlayerShooting;
-            }
-            else
-            {
-                state = State.ItemsGiving;
-            }
+        }
+        else
+        {
+            StartCoroutine(ReturnToPosition(State.ItemsGiving));
         }
     }
 }
