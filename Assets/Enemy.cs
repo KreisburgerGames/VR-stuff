@@ -3,7 +3,7 @@ using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Animations;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour // Don't even try reading this tbh
 {
     private Game game;
     private Animator animator;
