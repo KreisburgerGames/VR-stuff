@@ -11,7 +11,7 @@ public class ShotgunAnimation : MonoBehaviour
     public GameObject rightController, leftController;
     private XRGrabInteractable grab;
     public Pump pump;
-    private Animator animator;
+    public Animator animator;
 
     void Start()
     {
