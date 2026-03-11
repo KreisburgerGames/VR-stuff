@@ -132,7 +132,7 @@ public class Game : MonoBehaviour
             }
             else if(state == State.ItemsGiving)
             {
-                // Doesn't really exist yet
+                // No items or animations for this exist yet
                 round++;
                 state = State.Start;
             }
@@ -188,7 +188,7 @@ public class Game : MonoBehaviour
         else if(shellObjs.Count > 0) // Can also be called at 0 shells on a re-evaluation
         {
             yield return new WaitForSeconds(2f);
-            if(doesHeKnow) // Will be true if deaker used magnifying glass item
+            if(doesHeKnow) // Will be true if dealer used magnifying glass item
             {
                 if(shellObjs[0].GetComponent<Shell>().blank)
                 {
