@@ -40,13 +40,13 @@ public class Pump : MonoBehaviour
     }
     public void SetFirstPos(SelectEnterEventArgs selectEvent)
     {
-        if (xRGrab.interactorsSelecting.Count == 2)
+        if (xRGrab.interactorsSelecting.Count == 2) // Check for offhand grab
         {
             handedness = xRGrab.interactorsSelecting[0].handedness;
             currentHand = selectEvent.interactorObject.transform;
             // Set reference position for the pump in local space
             relativeOriginPos = referencePoint.transform.InverseTransformPoint(currentHand.position);
-            // This next line will almost never happen but I wrote it in the earlier stages of making this and im not gonna touch it
+            // Unlocks the chamber if player shot, didn't cycle and dropped the gun
             if(!chambered) locked = false;
         }
     }
@@ -74,7 +74,7 @@ public class Pump : MonoBehaviour
     
     public void Lock()
     {
-        // take a wild fucking guess
+        // Used in the deselect XR Grabbable Event
         locked = true;
     }
 
@@ -85,13 +85,10 @@ public class Pump : MonoBehaviour
         shellObj.GetComponent<Rigidbody>().isKinematic = false;
         shellObj.GetComponent<Rigidbody>().useGravity = true;
         shellObj.GetComponent<BoxCollider>().enabled = true;
-        // out.
         shellObj.transform.parent = null;
-        // out^2.
         shellObj.GetComponent<Rigidbody>().AddForce(shellEjectPoint.right * UnityEngine.Random.Range(2f, 4f), ForceMode.Impulse);
         shellObj.GetComponent<Rigidbody>().AddTorque(shellEjectPoint.up * UnityEngine.Random.Range(-20f, 20f), ForceMode.Impulse);
         shellObj = null;
-        // out^3.
         game.shellObjs.RemoveAt(0);
     }
 
@@ -118,15 +115,14 @@ public class Pump : MonoBehaviour
                     if(shellObj != null) Eject();
                     back = true;
                 }
-                // Actually set the position
+                // Update position
                 transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, defaultPos.z - displacement);
             }
             else
             {
-                // Do the same fucking thing
                 float displacement = referencePoint.transform.InverseTransformPoint(currentHand.position).y - relativeOriginPos.y;
                 displacement = Mathf.Clamp(displacement, 0, defaultPos.z - rackBackMaxPos.z);
-                // BUT DIFFERENT! (Make sure the pump can only go forward)
+                // Same code, but it doesn't allow the user to bring the pump back again
                 if (backDisplacement > displacement)
                 {
                     backDisplacement = displacement;
@@ -138,12 +134,12 @@ public class Pump : MonoBehaviour
                 float maxDisplacement = rackBackMaxPos.x - rackBackMaxPos.z;
                 // Animate
                 nextShellAnimator.SetFloat("backPos", currentPumpDisplacement/maxDisplacement);
-                if(MathF.Round(displacement, 5) == 0) // Copilot tried to get me to round 0 to the 5th digit, lemme uninstall I JUST remembered to
+                if(MathF.Round(displacement, 5) == 0)
                 {
                     back = false;
                     locked = true;
                     backDisplacement = 99f;
-                    // Reset animation again JUST in case
+                    // Reset animation for next time
                     nextShellAnimator.SetFloat("backPos", 0);
                     // Go back
                     game.state = Game.State.ReturnToPosition;
@@ -164,9 +160,8 @@ public class Pump : MonoBehaviour
         shellObj.transform.parent = shellEjectPoint;
         shellObj.transform.localPosition = Vector3.zero;
         shellObj.transform.localEulerAngles = Vector3.zero;
-        // Somehow it was inactive before idrk just set it active
         shellObj.SetActive(true);
-        if(game.shellObjs.Count > 1) nextShell.SetActive(true); // Only if another shell is next
+        if(game.shellObjs.Count > 1) nextShell.SetActive(true); // Only if there is another shell after the current one
         else nextShell.SetActive(false);
     }
 }

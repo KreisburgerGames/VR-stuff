@@ -45,7 +45,7 @@ public class Game : MonoBehaviour
 
     IEnumerator ShowShells()
     {
-        // Shells are currently shown when it reaches here
+        // Shells are currently shown when it reaches here, allow 3 seconds for player to count shells
         yield return new WaitForSeconds(3f);
         foreach(GameObject shell in shellObjs)
         {
@@ -53,7 +53,7 @@ public class Game : MonoBehaviour
             shell.transform.position = new Vector3(shell.transform.position.x, shell.transform.position.y - 5f, shell.transform.position.z);
             shell.GetComponent<Shell>().Hide(); // Sets their base color on the material to black which hides if their blank or not
         }
-        GameObject[] s = (GameObject[])ArrayExtensionMethods.Shuffle(shellObjs.ToArray()); // Took me to long on how to find how to do this
+        GameObject[] s = (GameObject[])ArrayExtensionMethods.Shuffle(shellObjs.ToArray());
         shellObjs = s.ToList();
         state = State.PlayerShooting;
     }
@@ -187,9 +187,8 @@ public class Game : MonoBehaviour
         }
         else if(shellObjs.Count > 0) // Can also be called at 0 shells on a re-evaluation
         {
-            // pacing ig
             yield return new WaitForSeconds(2f);
-            if(doesHeKnow) // yes this is a reference
+            if(doesHeKnow) // Will be true if deaker used magnifying glass item
             {
                 if(shellObjs[0].GetComponent<Shell>().blank)
                 {
