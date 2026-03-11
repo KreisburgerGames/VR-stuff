@@ -85,12 +85,13 @@ public class Pump : MonoBehaviour
         shellObj.GetComponent<Rigidbody>().isKinematic = false;
         shellObj.GetComponent<Rigidbody>().useGravity = true;
         shellObj.GetComponent<BoxCollider>().enabled = true;
-        shellObj.transform.parent = null;
         // out.
+        shellObj.transform.parent = null;
+        // out^2.
         shellObj.GetComponent<Rigidbody>().AddForce(shellEjectPoint.right * UnityEngine.Random.Range(2f, 4f), ForceMode.Impulse);
         shellObj.GetComponent<Rigidbody>().AddTorque(shellEjectPoint.up * UnityEngine.Random.Range(-20f, 20f), ForceMode.Impulse);
         shellObj = null;
-        // out^2.
+        // out^3.
         game.shellObjs.RemoveAt(0);
     }
 
