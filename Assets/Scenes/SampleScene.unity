@@ -389,6 +389,8 @@ MonoBehaviour:
   liveShellsLeft: 0
   doesHeKnow: 0
   enemy: {fileID: 496800891}
+  sgBodyCol: {fileID: 2576786973282084405}
+  sgPumpCol: {fileID: 7096463066263577549}
 --- !u!1 &223524655
 GameObject:
   m_ObjectHideFlags: 0
@@ -1241,7 +1243,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.27059805, y: -0.27059805, z: -0.6532815, w: 0.6532815}
   m_LocalPosition: {x: 0.28985, y: 0.61, z: -2.2803488}
-  m_LocalScale: {x: 0.15000007, y: 0.15000004, z: 0.15000004}
+  m_LocalScale: {x: 0.15000004, y: 0.15, z: 0.15000004}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1005325090}
@@ -4093,6 +4095,11 @@ Transform:
 --- !u!1 &2576786973282084404 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9006212748843377922, guid: bf6e0fffdcdaada40acddd9425441afe, type: 3}
+  m_PrefabInstance: {fileID: 2576786973282084400}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &2576786973282084405 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 6200948205337782605, guid: bf6e0fffdcdaada40acddd9425441afe, type: 3}
   m_PrefabInstance: {fileID: 2576786973282084400}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &4467503408339655185 stripped
