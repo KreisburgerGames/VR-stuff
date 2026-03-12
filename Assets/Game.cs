@@ -25,6 +25,7 @@ public class Game : MonoBehaviour
     public int blankShellsLeft, liveShellsLeft;
     public bool doesHeKnow = false;
     public Enemy enemy;
+    public BoxCollider sgBodyCol, sgPumpCol; // Both attachment transform colliders on the shotgun
 
     public enum State
     {
@@ -112,6 +113,8 @@ public class Game : MonoBehaviour
                 pump.Chamber();
                 shotgunGrab.gameObject.GetComponent<Rigidbody>().isKinematic = false;
                 shotgunGrab.gameObject.GetComponent<BoxCollider>().enabled = true;
+                sgBodyCol.enabled = true;
+                sgPumpCol.enabled = true;
                 shotgunGrab.enabled = true;
                 pump.canShoot = true;
             }
@@ -149,6 +152,8 @@ public class Game : MonoBehaviour
         shotgunGrab.gameObject.GetComponent<Highlight>().OnFirstHoverExited(null);
         shotgunGrab.gameObject.GetComponent<Rigidbody>().isKinematic = true;
         shotgunGrab.gameObject.GetComponent<BoxCollider>().enabled = false;
+        sgBodyCol.enabled = false;
+        sgPumpCol.enabled = false;
         while(timer < 2f)
         {
             shotgun.transform.position = Vector3.Lerp(shotgun.transform.position, ShotgunDefaultPos.position, timer/2f);
