@@ -66,7 +66,7 @@ public class Pump : MonoBehaviour
                 shellObj.GetComponent<MeshFilter>().mesh = spentShellMesh;
                 shellObj.GetComponent<Shell>().RevealShell();
             }
-            if(!game.shellObjs[0].GetComponent<Shell>().blank) GetComponentInParent<ShotgunAnimation>().animator.Play("shotgun_fire");
+            //if(!game.shellObjs[0].GetComponent<Shell>().blank) GetComponentInParent<ShotgunAnimation>().animator.Play("shotgun_fire");
             locked = false;
             chambered = false;
         }

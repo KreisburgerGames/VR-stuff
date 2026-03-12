@@ -110,6 +110,8 @@ public class Game : MonoBehaviour
                 }
                 // Prepare the shotgun for the player's turn
                 pump.Chamber();
+                shotgunGrab.gameObject.GetComponent<Rigidbody>().isKinematic = false;
+                shotgunGrab.gameObject.GetComponent<BoxCollider>().enabled = true;
                 shotgunGrab.enabled = true;
                 pump.canShoot = true;
             }
@@ -145,6 +147,8 @@ public class Game : MonoBehaviour
         yield return new WaitForSeconds(1f);
         shotgunGrab.enabled = false;
         shotgunGrab.gameObject.GetComponent<Highlight>().OnFirstHoverExited(null);
+        shotgunGrab.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+        shotgunGrab.gameObject.GetComponent<BoxCollider>().enabled = false;
         while(timer < 2f)
         {
             shotgun.transform.position = Vector3.Lerp(shotgun.transform.position, ShotgunDefaultPos.position, timer/2f);

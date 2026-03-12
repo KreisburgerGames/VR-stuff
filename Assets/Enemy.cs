@@ -45,14 +45,17 @@ public class Enemy : MonoBehaviour
         shellObj.transform.localEulerAngles = Vector3.zero;
         yield return new WaitForSeconds(1f);
         animator.Play("e_grab_shotgun");
+        yield return null; // Wait one frame to allow the animator to change states
         while(animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f) yield return null; // Waits for animation to finish
         yield return new WaitForSeconds(0.5f);
         animator.Play("e_aim_self");
+        yield return null;
         while(animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f) yield return null;
         yield return new WaitForSeconds(0.5f);
         if(shellObj.GetComponent<Shell>().blank)
         {
             animator.Play("e_self_blank");
+            yield return null;
             while(animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f) yield return null;
             // Swap visibility of shotguns
             shotgun.SetActive(false);
@@ -62,6 +65,7 @@ public class Enemy : MonoBehaviour
         else
         {
             animator.Play("e_self_live");
+            yield return null;
             while(animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f) yield return null;
             shotgun.SetActive(false);
             playerShotgun.SetActive(true);
@@ -88,14 +92,17 @@ public class Enemy : MonoBehaviour
         shellObj.transform.localEulerAngles = Vector3.zero;
         yield return new WaitForSeconds(1f);
         animator.Play("e_grab_shotgun");
+        yield return null;
         while(animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f) {print(animator.GetCurrentAnimatorStateInfo(0).normalizedTime); yield return null;}
         yield return new WaitForSeconds(0.5f);
         animator.Play("e_aim_player");
+        yield return null;
         while(animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f) yield return null;
         yield return new WaitForSeconds(0.5f);
         if(shellObj.GetComponent<Shell>().blank)
         {
             animator.Play("e_player_blank");
+            yield return null;
             while(animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f) yield return null;
             shotgun.SetActive(false);
             playerShotgun.SetActive(true);
@@ -104,6 +111,7 @@ public class Enemy : MonoBehaviour
         else
         {
             animator.Play("e_player_live");
+            yield return null;
             while(animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f) yield return null;
             shotgun.SetActive(false);
             playerShotgun.SetActive(true);
