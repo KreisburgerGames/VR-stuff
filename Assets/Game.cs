@@ -34,6 +34,7 @@ public class Game : MonoBehaviour
         PlayerShooting,
         EnemyShooting,
         ReturnToPosition,
+        ReturnOnBlank,
         ItemsGiving,
         Wait
     }
@@ -123,6 +124,11 @@ public class Game : MonoBehaviour
                 // State should only be directly set to this for the end of a player's turn
                 StartCoroutine(ReturnToPosition(State.EnemyShooting));
             }
+            else if(state == State.ReturnOnBlank)
+            {
+                // State should only be directly set to this when the player shoots a blank shell at themselves
+                StartCoroutine(ReturnToPosition(State.PlayerShooting));
+            }
             else if(state == State.EnemyShooting)
             {
                 // Can also be 0 when set to this state
@@ -158,6 +164,7 @@ public class Game : MonoBehaviour
         {
             shotgun.transform.position = Vector3.Lerp(shotgun.transform.position, ShotgunDefaultPos.position, timer/2f);
             shotgun.transform.rotation = Quaternion.Lerp(shotgun.transform.rotation, ShotgunDefaultPos.rotation, timer/2f);
+            shotgun.transform.localScale = Vector3.Lerp(shotgun.transform.localScale, Vector3.one, timer/2f);
             timer += Time.deltaTime;
             yield return null;
         }

@@ -7,11 +7,14 @@ TagManager:
   - Left Controller
   - Right Controller
   - Interactable
+  - Self
+  - Dealer
+  - Scaler
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Hittable
   - Water
   - UI
   - Left Controller

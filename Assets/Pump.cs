@@ -30,6 +30,8 @@ public class Pump : MonoBehaviour
     public Transform maxHold, MinHold;
     public bool canShoot = false;
     public GameObject nextShell;
+    public LayerMask hittableLayer;
+    private bool blankSelf = false;
 
     void Start()
     {
@@ -56,6 +58,21 @@ public class Pump : MonoBehaviour
         // Only shoot with trigger finger while chambered and allowed to shoot
         if(act.interactorObject.handedness == handedness && chambered && canShoot)
         {
+            if(Physics.Raycast(shellEjectPoint.position, shellEjectPoint.forward, out RaycastHit hit, 5f, hittableLayer, QueryTriggerInteraction.Collide))
+            {
+                if(hit.collider.gameObject.tag == "Self")
+                {
+                    if(game.shellObjs[0].GetComponent<Shell>().blank)
+                    {
+                        blankSelf = true;
+                    }
+                }
+                else if(hit.collider.gameObject.tag == "Dealer")
+                {
+                    
+                }
+            }
+            else return;
             canShoot = false;
             // Reset the reference position, makes it feel a little more natural
             relativeOriginPos = referencePoint.transform.InverseTransformPoint(currentHand.position);
@@ -66,7 +83,7 @@ public class Pump : MonoBehaviour
                 shellObj.GetComponent<MeshFilter>().mesh = spentShellMesh;
                 shellObj.GetComponent<Shell>().RevealShell();
             }
-            //if(!game.shellObjs[0].GetComponent<Shell>().blank) GetComponentInParent<ShotgunAnimation>().animator.Play("shotgun_fire");
+            if(!game.shellObjs[0].GetComponent<Shell>().blank) GetComponentInParent<ShotgunAnimation>().animator.Play("shotgun_fire");
             locked = false;
             chambered = false;
         }
@@ -142,7 +159,9 @@ public class Pump : MonoBehaviour
                     // Reset animation for next time
                     nextShellAnimator.SetFloat("backPos", 0);
                     // Go back
-                    game.state = Game.State.ReturnToPosition;
+                    if(blankSelf) game.state = Game.State.ReturnOnBlank;
+                    else game.state = Game.State.ReturnToPosition;
+                    blankSelf = false;
                 }
             }
         }
