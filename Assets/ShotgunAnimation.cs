@@ -7,7 +7,7 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 public class ShotgunAnimation : MonoBehaviour
 {
     [SerializeField] private InputActionReference triggerActionReference;
-    public GameObject rightHandPrimary, leftHandSecondary;
+    public GameObject rightHandPrimary, rightHandSecondary, leftHandPrimary, leftHandSecondary;
     public GameObject rightController, leftController;
     private XRGrabInteractable grab;
     public Pump pump;
@@ -30,22 +30,38 @@ public class ShotgunAnimation : MonoBehaviour
     {
         if(args.interactorObject.handedness == UnityEngine.XR.Interaction.Toolkit.Interactors.InteractorHandedness.Right)
         {
-            rightHandPrimary.SetActive(true);
-            rightController.SetActive(false);
+            if(grab.interactorsSelecting.Count > 0)
+            {
+                rightHandPrimary.SetActive(true);
+                rightController.SetActive(false);
+            }
+            else
+            {
+                rightHandSecondary.SetActive(true);
+                rightController.SetActive(false);
+            }
         }
         else if(args.interactorObject.handedness == UnityEngine.XR.Interaction.Toolkit.Interactors.InteractorHandedness.Left)
         {
-            leftHandSecondary.SetActive(true);
-            leftController.SetActive(false);
+            if(grab.interactorsSelecting.Count > 0)
+            {
+                leftHandPrimary.SetActive(true);
+                leftController.SetActive(false);
+            }
+            else
+            {
+                leftHandSecondary.SetActive(true);
+                leftController.SetActive(false);
+            }
         }
         animator.enabled = true;
     }
 
     private void Drop()
     {
-        rightHandPrimary.SetActive(false);
+        rightHandPrimary.SetActive(false); rightHandSecondary.SetActive(false);
         rightController.SetActive(true);
-        leftHandSecondary.SetActive(false);
+        leftHandSecondary.SetActive(false); leftHandSecondary.SetActive(false);
         leftController.SetActive(true);
         grab.enabled = false;
         grab.enabled = true;
@@ -56,14 +72,14 @@ public class ShotgunAnimation : MonoBehaviour
     {
         if(args.interactorObject.handedness == UnityEngine.XR.Interaction.Toolkit.Interactors.InteractorHandedness.Right)
         {
-            rightHandPrimary.SetActive(false);
+            rightHandPrimary.SetActive(false); rightHandSecondary.SetActive(false);
             rightController.SetActive(true);
             if(pump.handedness == UnityEngine.XR.Interaction.Toolkit.Interactors.InteractorHandedness.Right && grab.interactorsSelecting.Count == 1) Drop(); 
             if(grab.interactorsSelecting.Count == 0) animator.enabled = false;
         }
         else if(args.interactorObject.handedness == UnityEngine.XR.Interaction.Toolkit.Interactors.InteractorHandedness.Left)
         {
-            leftHandSecondary.SetActive(false);
+            leftHandSecondary.SetActive(false); leftHandPrimary.SetActive(false);
             leftController.SetActive(true);
             if(pump.handedness == UnityEngine.XR.Interaction.Toolkit.Interactors.InteractorHandedness.Left && grab.interactorsSelecting.Count == 1) Drop(); 
             if(grab.interactorsSelecting.Count == 0) animator.enabled = false;
