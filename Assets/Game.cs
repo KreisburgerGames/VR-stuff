@@ -21,11 +21,14 @@ public class Game : MonoBehaviour
     private State oldState = State.Wait;
     public GameObject shellPrefab;
     public Pump pump;
-    public List<GameObject> enemyItems = new List<GameObject>();
     public int blankShellsLeft, liveShellsLeft;
     public bool doesHeKnow = false;
     public Enemy enemy;
     public BoxCollider sgBodyCol, sgPumpCol; // Both attachment transform colliders on the shotgun
+    public List<GameObject> itemPrefabs = new List<GameObject>();
+    public List<GameObject> playerItems {get; private set;} = new List<GameObject>(); public List<GameObject> enemyItems {get; private set;} = new List<GameObject>();
+    public GameObject itemCrate;
+    public Transform spawnPoint;
 
     public enum State
     {
@@ -143,11 +146,41 @@ public class Game : MonoBehaviour
             }
             else if(state == State.ItemsGiving)
             {
-                // No items or animations for this exist yet
-                round++;
-                state = State.Start;
+                StartCoroutine(HandItems());
             }
         }
+    }
+
+    private IEnumerator HandItems()
+    {
+        // Items only on stage 2 and 3
+        int itemsToGive = 0;
+        if(stage == 2) itemsToGive = 2;
+        else if (stage == 3)
+        {
+            /* 
+            Stage 3 begins - 4 items
+            Stage 3 when shells run out - 2 more items
+            */
+            if(round == 1) itemsToGive = 4; else itemsToGive = 2; // Should also eventually add it where Stage 3 round 1 your old items are cleared
+        }
+        if(itemsToGive > 0)
+        {
+            itemCrate.SetActive(true);
+            for(int i = 0; i < itemsToGive; i++)
+            {
+                // Spawn item, initialize, and wait until the player grabs the item
+                GameObject itemToGive = itemPrefabs[UnityEngine.Random.Range(0, itemPrefabs.Count)];
+                GameObject item = Instantiate(itemToGive, spawnPoint, false);
+                ItemBox boxRef = itemCrate.GetComponent<ItemBox>();
+                boxRef.SetNext(item);
+                while(boxRef.nextObject != null) yield return null;
+            }
+            yield return new WaitForSeconds(1f);
+            itemCrate.SetActive(false);
+        }
+        round++;
+        state = State.Start;
     }
 
     private IEnumerator ReturnToPosition(State toState)
