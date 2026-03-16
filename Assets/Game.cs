@@ -164,7 +164,6 @@ public class Game : MonoBehaviour
         {
             shotgun.transform.position = Vector3.Lerp(shotgun.transform.position, ShotgunDefaultPos.position, timer/2f);
             shotgun.transform.rotation = Quaternion.Lerp(shotgun.transform.rotation, ShotgunDefaultPos.rotation, timer/2f);
-            shotgun.transform.localScale = Vector3.Lerp(shotgun.transform.localScale, Vector3.one, timer/2f);
             timer += Time.deltaTime;
             yield return null;
         }

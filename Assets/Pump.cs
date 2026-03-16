@@ -1,6 +1,7 @@
 using System;
 using UnityEditor.XR.Interaction.Toolkit.Interactables;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
@@ -32,6 +33,8 @@ public class Pump : MonoBehaviour
     public GameObject nextShell;
     public LayerMask hittableLayer;
     private bool blankSelf = false;
+    public Transform primaryGrabPos, offsethandGrabPos;
+    public InputActionReference offsetButton;
 
     void Start()
     {
@@ -39,7 +42,29 @@ public class Pump : MonoBehaviour
         game = FindFirstObjectByType<Game>();
         nextShellAnimator = GetComponent<Animator>();
         nextShell.SetActive(false);
+        xRGrab.attachTransform = primaryGrabPos;
+        offsetButton.action.started += ToggleGrabPos;
     }
+
+    void OnDestroy()
+    {
+        offsetButton.action.started -= ToggleGrabPos;
+    }
+
+    public void ToggleGrabPos(InputAction.CallbackContext ctx)
+    {
+        print(xRGrab.interactorsSelecting.Count);
+        if(xRGrab.interactorsSelecting.Count != 1) return; // Only toggle if the pump is currently held
+        if(xRGrab.attachTransform == primaryGrabPos)
+        {
+            xRGrab.attachTransform = offsethandGrabPos;
+        }
+        else
+        {
+            xRGrab.attachTransform = primaryGrabPos;
+        }
+    }
+
     public void SetFirstPos(SelectEnterEventArgs selectEvent)
     {
         if (xRGrab.interactorsSelecting.Count == 2) // Check for offhand grab

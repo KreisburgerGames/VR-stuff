@@ -38,6 +38,7 @@ public class ShotgunAnimation : MonoBehaviour
             leftHandPrimary.SetActive(true);
             leftController.SetActive(false);
         }
+        animator.enabled = true;
     }
 
     private void Drop()
@@ -48,6 +49,7 @@ public class ShotgunAnimation : MonoBehaviour
         leftController.SetActive(true);
         grab.enabled = false;
         grab.enabled = true;
+        animator.enabled = false;
     }
 
     public void Deselected(SelectExitEventArgs args)
@@ -57,12 +59,14 @@ public class ShotgunAnimation : MonoBehaviour
             rightHandPrimary.SetActive(false);
             rightController.SetActive(true);
             if(pump.handedness == UnityEngine.XR.Interaction.Toolkit.Interactors.InteractorHandedness.Right && grab.interactorsSelecting.Count == 1) Drop(); 
+            if(grab.interactorsSelecting.Count == 0) animator.enabled = false;
         }
         else if(args.interactorObject.handedness == UnityEngine.XR.Interaction.Toolkit.Interactors.InteractorHandedness.Left)
         {
             leftHandPrimary.SetActive(false);
             leftController.SetActive(true);
             if(pump.handedness == UnityEngine.XR.Interaction.Toolkit.Interactors.InteractorHandedness.Left && grab.interactorsSelecting.Count == 1) Drop(); 
+            if(grab.interactorsSelecting.Count == 0) animator.enabled = false;
         }
     }
 }
