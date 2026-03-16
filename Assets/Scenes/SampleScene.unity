@@ -4782,6 +4782,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1218456064099825358, guid: bf6e0fffdcdaada40acddd9425441afe, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1531954767036235802, guid: bf6e0fffdcdaada40acddd9425441afe, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.959
@@ -4842,6 +4846,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2210873421293733774, guid: bf6e0fffdcdaada40acddd9425441afe, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2228309001909343160, guid: bf6e0fffdcdaada40acddd9425441afe, type: 3}
       propertyPath: m_Name
       value: Shotgun
@@ -4855,9 +4863,25 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 277619841}
     - target: {fileID: 5000272401196490868, guid: bf6e0fffdcdaada40acddd9425441afe, type: 3}
+      propertyPath: leftHandPrimary
+      value: 
+      objectReference: {fileID: 2576786973282084402}
+    - target: {fileID: 5000272401196490868, guid: bf6e0fffdcdaada40acddd9425441afe, type: 3}
       propertyPath: rightController
       value: 
       objectReference: {fileID: 1150724501}
+    - target: {fileID: 5000272401196490868, guid: bf6e0fffdcdaada40acddd9425441afe, type: 3}
+      propertyPath: leftHandSecondary
+      value: 
+      objectReference: {fileID: 2576786973282084402}
+    - target: {fileID: 5000272401196490868, guid: bf6e0fffdcdaada40acddd9425441afe, type: 3}
+      propertyPath: rightHandSecondary
+      value: 
+      objectReference: {fileID: 2576786973282084403}
+    - target: {fileID: 5682787685130900467, guid: bf6e0fffdcdaada40acddd9425441afe, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5860529123015007366, guid: bf6e0fffdcdaada40acddd9425441afe, type: 3}
       propertyPath: m_Name
       value: Trigger
@@ -4986,6 +5010,10 @@ PrefabInstance:
       propertyPath: hittableLayer.m_Bits
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 8946546603432581116, guid: bf6e0fffdcdaada40acddd9425441afe, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5002,6 +5030,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c9e0725a9823b34495de87763e84720, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+--- !u!1 &2576786973282084402 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8946546603432581116, guid: bf6e0fffdcdaada40acddd9425441afe, type: 3}
+  m_PrefabInstance: {fileID: 2576786973282084400}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2576786973282084403 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5682787685130900467, guid: bf6e0fffdcdaada40acddd9425441afe, type: 3}
+  m_PrefabInstance: {fileID: 2576786973282084400}
+  m_PrefabAsset: {fileID: 0}
 --- !u!65 &2576786973282084405 stripped
 BoxCollider:
   m_CorrespondingSourceObject: {fileID: 6200948205337782605, guid: bf6e0fffdcdaada40acddd9425441afe, type: 3}

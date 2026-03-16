@@ -32,6 +32,8 @@ public class ShotgunAnimation : MonoBehaviour
         {
             if(grab.interactorsSelecting.Count > 0)
             {
+                animator.Play("RightFire");
+                animator.SetBool("RightHanded", true);
                 rightHandPrimary.SetActive(true);
                 rightController.SetActive(false);
             }
@@ -45,6 +47,8 @@ public class ShotgunAnimation : MonoBehaviour
         {
             if(grab.interactorsSelecting.Count > 0)
             {
+                animator.Play("LeftFire");
+                animator.SetBool("RightHanded", false);
                 leftHandPrimary.SetActive(true);
                 leftController.SetActive(false);
             }
