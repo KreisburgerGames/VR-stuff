@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
+using UnityEngine.SceneManagement;
+using System.Net.NetworkInformation;
 
 public class Pump : MonoBehaviour
 {
@@ -70,6 +72,10 @@ public class Pump : MonoBehaviour
         {
             xRGrab.attachTransform = primaryGrabPos;
         }
+        IXRSelectInteractor xRInteractor = xRGrab.interactorsSelecting[0];
+        xRGrab.enabled = false;
+        xRGrab.enabled = true;
+        FindFirstObjectByType<XRInteractionManager>().SelectEnter(xRInteractor, xRGrab);
     }
 
     public void SetFirstPos(SelectEnterEventArgs selectEvent)
@@ -98,10 +104,15 @@ public class Pump : MonoBehaviour
                     {
                         blankSelf = true;
                     }
+                    else
+                    {
+                        game.playerLives -= 1;
+                        if (game.playerLives == 0) UnityEngine.SceneManagement.SceneManager.LoadScene("SampleScene");
+                    }
                 }
                 else if(hit.collider.gameObject.tag == "Dealer")
                 {
-                    
+                    game.enemyLives -= 1;
                 }
             }
             else return;
@@ -202,10 +213,21 @@ public class Pump : MonoBehaviour
                     // Reset animation for next time
                     nextShellAnimator.SetFloat("backPos", 0);
                     // Go back
-                    blankSelf = false;
+                    
                     if(checking) {checking = false; return;}
-                    if(blankSelf) game.state = Game.State.ReturnOnBlank;
-                    else game.state = Game.State.ReturnToPosition;
+                    
+                    else if(game.enemyLives > 0)
+                    {
+                        if(blankSelf)
+                            game.state = Game.State.ReturnOnBlank;
+                        else
+                            game.state = Game.State.ReturnToPosition;
+                    }
+                    else
+                    {
+                        game.state = Game.State.ReturnThenNextStage;
+                    }
+                    blankSelf = false;
                 }
             }
         }

@@ -29,6 +29,7 @@ public class Game : MonoBehaviour
     public List<GameObject> playerItems {get; private set;} = new List<GameObject>(); public List<GameObject> enemyItems {get; private set;} = new List<GameObject>();
     public GameObject itemCrate;
     public Transform spawnPoint;
+    public int playerLives, enemyLives = 2;
 
     public enum State
     {
@@ -39,6 +40,8 @@ public class Game : MonoBehaviour
         ReturnToPosition,
         ReturnOnBlank,
         ItemsGiving,
+        NextStage,
+        ReturnThenNextStage,
         Wait
     }
 
@@ -122,6 +125,22 @@ public class Game : MonoBehaviour
                 shotgunGrab.enabled = true;
                 pump.canShoot = true;
             }
+            else if(state == State.ReturnThenNextStage)
+            {
+                StartCoroutine(ReturnToPosition(State.NextStage));
+            }
+            else if(state == State.NextStage)
+            {
+                foreach(GameObject shell in shellObjs)
+                {
+                    Destroy(shell);
+                    shellObjs.RemoveAt(0);
+                }
+                stage++;
+                if(stage == 2) {enemyLives = 4; playerLives = 4;}
+                else {enemyLives = 6; playerLives = 6;}
+                state = State.ItemsGiving;
+            }
             else if(state == State.ReturnToPosition)
             {
                 // State should only be directly set to this for the end of a player's turn
@@ -155,7 +174,7 @@ public class Game : MonoBehaviour
     {
         // Items only on stage 2 and 3
         int itemsToGive = 0;
-        if(stage == 2) itemsToGive = 2;
+        if(stage == 2 || true) itemsToGive = 2;
         else if (stage == 3)
         {
             /* 

@@ -32,11 +32,13 @@ public class ItemBox : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        try
+        print(other.name)
+;        try
         {
             if(other.gameObject.GetComponent<NearFarInteractor>().interactablesSelected.Count == 0 && !subscribed && nextObject != null) // Only register the hover if nothing is already held and the other hand is not hovering, and if there is an object to give
             {
-                other.gameObject.GetComponent<NearFarInteractor>().selectInput.inputActionValue.started += (ctx) => OnGrab(ctx);
+                print("yes");
+                other.gameObject.GetComponent<NearFarInteractor>().selectInput.inputActionReferencePerformed.action.started += (ctx) => OnGrab(ctx);
                 interactorHovered = other.gameObject;
                 subscribed = true;
             }

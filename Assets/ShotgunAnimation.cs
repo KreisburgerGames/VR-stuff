@@ -30,7 +30,7 @@ public class ShotgunAnimation : MonoBehaviour
     {
         if(args.interactorObject.handedness == UnityEngine.XR.Interaction.Toolkit.Interactors.InteractorHandedness.Right)
         {
-            if(grab.interactorsSelecting.Count > 0)
+            if(grab.interactorsSelecting.Count < 2)
             {
                 animator.Play("RightFire");
                 animator.SetBool("RightHanded", true);
@@ -45,7 +45,7 @@ public class ShotgunAnimation : MonoBehaviour
         }
         else if(args.interactorObject.handedness == UnityEngine.XR.Interaction.Toolkit.Interactors.InteractorHandedness.Left)
         {
-            if(grab.interactorsSelecting.Count > 0)
+            if(grab.interactorsSelecting.Count < 2)
             {
                 animator.Play("LeftFire");
                 animator.SetBool("RightHanded", false);

@@ -69,7 +69,11 @@ public class Enemy : MonoBehaviour
             while(animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f) yield return null;
             shotgun.SetActive(false);
             playerShotgun.SetActive(true);
-            game.state = Game.State.PlayerShooting;
+            game.enemyLives--;
+            if(game.enemyLives == 0)
+                game.state = Game.State.ReturnThenNextStage;
+            else
+                game.state = Game.State.PlayerShooting;
         }
     }
 
