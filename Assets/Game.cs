@@ -131,9 +131,9 @@ public class Game : MonoBehaviour
             }
             else if(state == State.NextStage)
             {
-                foreach(GameObject shell in shellObjs)
+                for(int i = 0; i < shellObjs.Count; i++)
                 {
-                    Destroy(shell);
+                    Destroy(shellObjs[0]);
                     shellObjs.RemoveAt(0);
                 }
                 stage++;

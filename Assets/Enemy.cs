@@ -122,4 +122,10 @@ public class Enemy : MonoBehaviour
             game.state = Game.State.PlayerShooting;
         }
     }
+
+    public void PlayerHit()
+    {
+        game.playerLives -= 1;
+        if (game.playerLives == 0) UnityEngine.SceneManagement.SceneManager.LoadScene("SampleScene");
+    }
 }

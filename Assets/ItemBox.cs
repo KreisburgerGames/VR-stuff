@@ -17,28 +17,37 @@ public class ItemBox : MonoBehaviour
         nextObject = newObject;
     }
 
+    void OnDisable()
+    {
+        if(subscribed) // Unsubscribe from the grab event if the item box is disabled while hovering
+        {
+            interactorHovered.GetComponent<NearFarInteractor>().selectInput.inputActionReferencePerformed.action.started -= OnGrab;
+            subscribed = false;
+            interactorHovered = null;
+        }
+    }
+
     private void OnGrab(InputAction.CallbackContext ctx)
     {
-        nextObject.transform.position = transform.position; // XR Grab Interactable is velocity tracking, so this avoids any collision issues when you force the select interaction
-        nextObject.GetComponent<Rigidbody>().isKinematic = false;
+        print("grabbing");
+        nextObject.GetComponent<Rigidbody>().isKinematic = false; // XR Grab Interactable is velocity tracking, so this avoids any collision issues when you force the select interaction
+        nextObject.transform.position = transform.position; 
         game.playerItems.Add(nextObject);
         interactionManager.SelectEnter((IXRSelectInteractor)interactorHovered.GetComponent<NearFarInteractor>(), nextObject.GetComponent<XRGrabInteractable>());
         nextObject = null;
         // Unsubscribe from the grab event and reset variables
-        ctx.action.performed -= (ctx) => OnGrab(ctx);
+        interactorHovered.GetComponent<NearFarInteractor>().selectInput.inputActionReferencePerformed.action.started -= OnGrab;
         subscribed = false;
         interactorHovered = null;
     }
 
     void OnTriggerEnter(Collider other)
     {
-        print(other.name)
 ;        try
         {
             if(other.gameObject.GetComponent<NearFarInteractor>().interactablesSelected.Count == 0 && !subscribed && nextObject != null) // Only register the hover if nothing is already held and the other hand is not hovering, and if there is an object to give
             {
-                print("yes");
-                other.gameObject.GetComponent<NearFarInteractor>().selectInput.inputActionReferencePerformed.action.started += (ctx) => OnGrab(ctx);
+                other.gameObject.GetComponent<NearFarInteractor>().selectInput.inputActionReferencePerformed.action.started += OnGrab;
                 interactorHovered = other.gameObject;
                 subscribed = true;
             }
@@ -56,7 +65,7 @@ public class ItemBox : MonoBehaviour
             if(interactorHovered == other.gameObject && subscribed) // Check to see if it is the original hand that hovered and that the script is subscribed to the select/grab event
             {
                 // Unsubscribe and reset variables (Will not be done in the OnGrab() event if player doesn't actually GRAB the item)
-                other.gameObject.GetComponent<NearFarInteractor>().selectInput.inputActionValue.started -= (ctx) => OnGrab(ctx);
+                other.gameObject.GetComponent<NearFarInteractor>().selectInput.inputActionReferencePerformed.action.started -= OnGrab;
                 interactorHovered = null;
                 subscribed = false;
             }
