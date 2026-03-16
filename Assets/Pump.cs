@@ -35,6 +35,7 @@ public class Pump : MonoBehaviour
     private bool blankSelf = false;
     public Transform primaryGrabPos, offsethandGrabPos;
     public InputActionReference offsetButton;
+    private bool checking = false;
 
     void Start()
     {
@@ -44,6 +45,12 @@ public class Pump : MonoBehaviour
         nextShell.SetActive(false);
         xRGrab.attachTransform = primaryGrabPos;
         offsetButton.action.started += ToggleGrabPos;
+    }
+    
+    public void UnlockForCheck()
+    {
+        checking = true;
+        shellObj.GetComponent<Shell>().RevealShell();
     }
 
     void OnDestroy()
@@ -136,26 +143,34 @@ public class Pump : MonoBehaviour
 
     void Update()
     {
-        if(!locked && xRGrab.interactorsSelecting.Count == 2)
+        if((!locked || checking) && xRGrab.interactorsSelecting.Count == 2)
         {
             if(!back)
             {
                 // Get displacement from reference position set when grabbing pump and pulling trigger
                 float displacement = referencePoint.transform.InverseTransformPoint(currentHand.position).y - relativeOriginPos.y;
                 // Clamp between the pump's minimum and maximum position
-                displacement = Mathf.Clamp(displacement, 0, defaultPos.z - rackBackMaxPos.z);
+                if(!checking) displacement = Mathf.Clamp(displacement, 0, defaultPos.z - rackBackMaxPos.z); else displacement = Mathf.Clamp(displacement, 0, defaultPos.z - rackBackMaxPos.y);
                 // Make sure the next shell animation is reset
                 nextShellAnimator.SetFloat("backPos", 0);
                 if(shellObj != null && transform.localPosition.z <= ejectZ)
                 {
-                    // LEAVE
                     Eject();
                 }
-                if (MathF.Round(displacement, 5) == MathF.Round(defaultPos.z - rackBackMaxPos.z, 5))
+                if(!checking)
                 {
-                    // I SAID LEAVE
-                    if(shellObj != null) Eject();
-                    back = true;
+                   if (MathF.Round(displacement, 5) == MathF.Round(defaultPos.z - rackBackMaxPos.z, 5))
+                    {
+                        if(shellObj != null) Eject();
+                        back = true;
+                    } 
+                }
+                else
+                {
+                    if (MathF.Round(displacement, 5) == MathF.Round(defaultPos.z - rackBackMaxPos.y, 5))
+                    {
+                        back = true;
+                    }
                 }
                 // Update position
                 transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, defaultPos.z - displacement);
@@ -163,7 +178,7 @@ public class Pump : MonoBehaviour
             else
             {
                 float displacement = referencePoint.transform.InverseTransformPoint(currentHand.position).y - relativeOriginPos.y;
-                displacement = Mathf.Clamp(displacement, 0, defaultPos.z - rackBackMaxPos.z);
+                if(!checking) displacement = Mathf.Clamp(displacement, 0, defaultPos.z - rackBackMaxPos.z); else displacement = Mathf.Clamp(displacement, 0, defaultPos.z - rackBackMaxPos.y);
                 // Same code, but it doesn't allow the user to bring the pump back again
                 if (backDisplacement > displacement)
                 {
@@ -172,10 +187,13 @@ public class Pump : MonoBehaviour
                 displacement = Mathf.Clamp(displacement, 0, backDisplacement);
                 transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, defaultPos.z - displacement);
                 // Get info for next shell animation
-                float currentPumpDisplacement = transform.localPosition.z - rackBackMaxPos.z;
-                float maxDisplacement = rackBackMaxPos.x - rackBackMaxPos.z;
-                // Animate
-                nextShellAnimator.SetFloat("backPos", currentPumpDisplacement/maxDisplacement);
+                if(!checking)
+                {
+                    float currentPumpDisplacement = transform.localPosition.z - rackBackMaxPos.z;
+                    float maxDisplacement = rackBackMaxPos.x - rackBackMaxPos.z;
+                    // Animate
+                    nextShellAnimator.SetFloat("backPos", currentPumpDisplacement/maxDisplacement);
+                }
                 if(MathF.Round(displacement, 5) == 0)
                 {
                     back = false;
@@ -184,9 +202,10 @@ public class Pump : MonoBehaviour
                     // Reset animation for next time
                     nextShellAnimator.SetFloat("backPos", 0);
                     // Go back
+                    blankSelf = false;
+                    if(checking) {checking = false; return;}
                     if(blankSelf) game.state = Game.State.ReturnOnBlank;
                     else game.state = Game.State.ReturnToPosition;
-                    blankSelf = false;
                 }
             }
         }
