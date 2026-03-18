@@ -94,7 +94,7 @@ public class Pump : MonoBehaviour
     public void OnTriggerPull(ActivateEventArgs act)
     {
         // Only shoot with trigger finger while chambered and allowed to shoot
-        if(act.interactorObject.handedness == handedness && chambered && canShoot)
+        if(act.interactorObject.handedness == handedness && chambered && canShoot && !checking)
         {
             if(Physics.Raycast(shellEjectPoint.position, shellEjectPoint.forward, out RaycastHit hit, 5f, hittableLayer, QueryTriggerInteraction.Collide))
             {
