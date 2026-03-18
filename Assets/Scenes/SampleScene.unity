@@ -5138,6 +5138,14 @@ PrefabInstance:
       propertyPath: rightHandSecondary
       value: 
       objectReference: {fileID: 2576786973282084403}
+    - target: {fileID: 5000272401196490868, guid: bf6e0fffdcdaada40acddd9425441afe, type: 3}
+      propertyPath: triggerActionReferenceLeft
+      value: 
+      objectReference: {fileID: -4289430672226363583, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+    - target: {fileID: 5000272401196490868, guid: bf6e0fffdcdaada40acddd9425441afe, type: 3}
+      propertyPath: triggerActionReferenceRight
+      value: 
+      objectReference: {fileID: 7904272356298805229, guid: c348712bda248c246b8c49b3db54643f, type: 3}
     - target: {fileID: 5682787685130900467, guid: bf6e0fffdcdaada40acddd9425441afe, type: 3}
       propertyPath: m_IsActive
       value: 0

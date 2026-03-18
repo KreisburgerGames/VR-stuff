@@ -6,7 +6,7 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class ShotgunAnimation : MonoBehaviour
 {
-    [SerializeField] private InputActionReference triggerActionReference;
+    [SerializeField] private InputActionReference triggerActionReferenceRight, triggerActionReferenceLeft;
     public GameObject rightHandPrimary, rightHandSecondary, leftHandPrimary, leftHandSecondary;
     public GameObject rightController, leftController;
     private XRGrabInteractable grab;
@@ -21,17 +21,22 @@ public class ShotgunAnimation : MonoBehaviour
 
     void Update()
     {
-        float triggerValue = triggerActionReference.action.ReadValue<float>();
+        float triggerValue = 0f;
+        if(rightHandPrimary.activeSelf)
+            triggerValue = triggerActionReferenceRight.action.ReadValue<float>();
+        else if(leftHandPrimary.activeSelf)
+            triggerValue = triggerActionReferenceLeft.action.ReadValue<float>();
         animator.SetFloat("Trigger", triggerValue);
     }
 
-    // Only right handed supported currently
     public void Selected(SelectEnterEventArgs args)
     {
+        // Check for handedness and evaluate if it is the primary or secondary hand
         if(args.interactorObject.handedness == UnityEngine.XR.Interaction.Toolkit.Interactors.InteractorHandedness.Right)
         {
             if(grab.interactorsSelecting.Count < 2)
             {
+                // Make sure animator works for both hands
                 animator.Play("RightFire");
                 animator.SetBool("RightHanded", true);
                 rightHandPrimary.SetActive(true);
@@ -63,6 +68,7 @@ public class ShotgunAnimation : MonoBehaviour
 
     private void Drop()
     {
+        // Force player to drop
         rightHandPrimary.SetActive(false); rightHandSecondary.SetActive(false);
         rightController.SetActive(true);
         leftHandSecondary.SetActive(false); leftHandSecondary.SetActive(false);
@@ -76,10 +82,12 @@ public class ShotgunAnimation : MonoBehaviour
     {
         if(args.interactorObject.handedness == UnityEngine.XR.Interaction.Toolkit.Interactors.InteractorHandedness.Right)
         {
+            // Disable both right/left hand objects (Depending of the if statement above), will work if it was the primary or secondary hand
             rightHandPrimary.SetActive(false); rightHandSecondary.SetActive(false);
             rightController.SetActive(true);
+            // Force a drop if the pump is still held with the secondary hand
             if(pump.handedness == UnityEngine.XR.Interaction.Toolkit.Interactors.InteractorHandedness.Right && grab.interactorsSelecting.Count == 1) Drop(); 
-            if(grab.interactorsSelecting.Count == 0) animator.enabled = false;
+            if(grab.interactorsSelecting.Count == 0) animator.enabled = false; // Disable animator 
         }
         else if(args.interactorObject.handedness == UnityEngine.XR.Interaction.Toolkit.Interactors.InteractorHandedness.Left)
         {
