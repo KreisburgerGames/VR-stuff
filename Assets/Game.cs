@@ -66,6 +66,22 @@ public class Game : MonoBehaviour
         state = State.PlayerShooting;
     }
 
+    public void EnableItems()
+    {
+        foreach(GameObject item in playerItems)
+        {
+            item.GetComponent<Item>().canUse = true;
+        }
+    }
+
+    public void DisableItems()
+    {
+        foreach(GameObject item in playerItems)
+        {
+            item.GetComponent<Item>().canUse = false;
+        }
+    }
+
     void Update()
     {
         if(state != oldState) // Only runs ONCE per state change
@@ -124,6 +140,7 @@ public class Game : MonoBehaviour
                 sgPumpCol.enabled = true;
                 shotgunGrab.enabled = true;
                 pump.canShoot = true;
+                EnableItems();
             }
             else if(state == State.ReturnThenNextStage)
             {

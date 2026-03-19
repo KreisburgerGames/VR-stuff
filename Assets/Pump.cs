@@ -116,6 +116,7 @@ public class Pump : MonoBehaviour
                 }
             }
             else return;
+            game.DisableItems();
             canShoot = false;
             // Reset the reference position, makes it feel a little more natural
             relativeOriginPos = referencePoint.transform.InverseTransformPoint(currentHand.position);

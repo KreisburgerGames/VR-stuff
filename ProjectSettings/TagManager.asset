@@ -11,6 +11,7 @@ TagManager:
   - Dealer
   - Scaler
   - Table
+  - Box
   layers:
   - Default
   - TransparentFX

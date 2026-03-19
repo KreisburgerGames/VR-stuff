@@ -9,21 +9,31 @@ public class MagnifyingGlassItem : MonoBehaviour
     public GameObject outside;
     public MeshFilter meshFilter;
     private bool used = false;
+    private Item item;
     private Pump pump;
+    private Game game;
 
     void Awake()
     {
         pump = FindFirstObjectByType<Pump>();
+        item = GetComponent<Item>();
+        game = FindFirstObjectByType<Game>();
     }
 
-    void OnCollisionEnter(Collision collision)
+    void OnTriggerEnter(Collider other)
     {
-        if(!used && collision.gameObject.tag == "Table" && rb.linearVelocity.magnitude >= minimumBreakMagnitute)
+        print(other.gameObject.tag);
+        if(other.gameObject.tag == "Table")
+        {
+            print(rb.linearVelocity.magnitude);
+        }
+        if(item.canUse && !used && other.gameObject.tag == "Table" && rb.linearVelocity.magnitude >= minimumBreakMagnitute)
         {
             meshFilter.mesh = brokenMesh;
             used = true;
             pump.UnlockForCheck();
             outside.SetActive(false);
+            game.playerItems.Remove(gameObject);
         }
     }
 }
