@@ -23,6 +23,7 @@ public class BeerItem : MonoBehaviour
 
     public void Open()
     {
+        if(!item.canUse) return;
         opened = true;
     }
 
