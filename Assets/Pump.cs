@@ -223,6 +223,15 @@ public class Pump : MonoBehaviour
                     // Go back
                     
                     if(checking) {checking = false; return;}
+                    else if (skipping)
+                    {
+                        if(game.shellObjs.Count > 0)
+                        {
+                            skipping = false;
+                            Chamber();
+                            return;
+                        }
+                    }
                     
                     else if(game.enemyLives > 0)
                     {
@@ -230,6 +239,7 @@ public class Pump : MonoBehaviour
                             game.state = Game.State.ReturnOnBlank;
                         else
                             game.state = Game.State.ReturnToPosition;
+                        skipping = false;
                     }
                     else
                     {
