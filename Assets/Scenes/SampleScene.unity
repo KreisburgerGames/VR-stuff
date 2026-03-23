@@ -642,6 +642,7 @@ MonoBehaviour:
   sgPumpCol: {fileID: 7096463066263577549}
   itemPrefabs:
   - {fileID: 3719118383154792292, guid: 388d05011412cf740a2c2b4bf7528576, type: 3}
+  - {fileID: 137999472260101969, guid: b66b4400c4073fb468a4a03e95abd3f9, type: 3}
   itemCrate: {fileID: 820312397}
   spawnPoint: {fileID: 709388679}
   playerLives: 2

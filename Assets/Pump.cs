@@ -38,6 +38,7 @@ public class Pump : MonoBehaviour
     public Transform primaryGrabPos, offsethandGrabPos;
     public InputActionReference offsetButton;
     private bool checking = false;
+    private bool skipping = false;
 
     void Start()
     {
@@ -52,6 +53,12 @@ public class Pump : MonoBehaviour
     public void UnlockForCheck()
     {
         checking = true;
+        shellObj.GetComponent<Shell>().RevealShell();
+    }
+
+    public void UnlockForSkip()
+    {
+        skipping = true;
         shellObj.GetComponent<Shell>().RevealShell();
     }
 
@@ -94,7 +101,7 @@ public class Pump : MonoBehaviour
     public void OnTriggerPull(ActivateEventArgs act)
     {
         // Only shoot with trigger finger while chambered and allowed to shoot
-        if(act.interactorObject.handedness == handedness && chambered && canShoot && !checking)
+        if(act.interactorObject.handedness == handedness && chambered && canShoot && !checking && !skipping)
         {
             if(Physics.Raycast(shellEjectPoint.position, shellEjectPoint.forward, out RaycastHit hit, 5f, hittableLayer, QueryTriggerInteraction.Collide))
             {
@@ -155,7 +162,7 @@ public class Pump : MonoBehaviour
 
     void Update()
     {
-        if((!locked || checking) && xRGrab.interactorsSelecting.Count == 2)
+        if((!locked || checking || skipping) && xRGrab.interactorsSelecting.Count == 2)
         {
             if(!back)
             {
@@ -219,7 +226,7 @@ public class Pump : MonoBehaviour
                     
                     else if(game.enemyLives > 0)
                     {
-                        if(blankSelf)
+                        if(blankSelf || skipping)
                             game.state = Game.State.ReturnOnBlank;
                         else
                             game.state = Game.State.ReturnToPosition;
