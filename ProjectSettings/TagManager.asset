@@ -12,6 +12,7 @@ TagManager:
   - Scaler
   - Table
   - Box
+  - Handsaw
   layers:
   - Default
   - TransparentFX
