@@ -8,7 +8,8 @@ public class BeerItem : MonoBehaviour
     private float liquidLevel = 100f;
     private XRGrabInteractable xRGrab;
     public float drinkSpeed = 10f;
-    public float minRotation, maxRotation;
+    public float minRotation = 130f;
+    public float maxRotation = 210f;
     public LayerMask whatIsPlayer;
     private bool opened = false;
     private bool used = false;
@@ -29,12 +30,14 @@ public class BeerItem : MonoBehaviour
 
     void Update()
     {
-        if(item.canUse && !used && xRGrab.interactorsSelecting.Count == 1)
+        if(item.canUse && !used && xRGrab.interactorsSelecting.Count == 1 && opened)
         {
             bool rayHitsSelf = false;
-            Physics.Raycast(transform.position, Vector3.up, out RaycastHit hit, 5f, whatIsPlayer);
-            if(hit.collider.gameObject != null && hit.collider.gameObject.tag == "Self") rayHitsSelf = true;
-            if(transform.rotation.x > minRotation && transform.rotation.x < maxRotation && rayHitsSelf)
+            Physics.Raycast(transform.position, transform.up, out RaycastHit hit, 5f, whatIsPlayer, QueryTriggerInteraction.Collide);
+            if(hit.collider != null && hit.collider.gameObject.tag == "Self") rayHitsSelf = true;
+            print(rayHitsSelf);
+            print(transform.localEulerAngles.z);
+            if(transform.localEulerAngles.z >= minRotation && transform.localEulerAngles.z <= maxRotation && rayHitsSelf)
             {
                 liquidLevel -= drinkSpeed * Time.deltaTime;
                 if(!drinkingParticle.activeSelf) drinkingParticle.SetActive(true);
