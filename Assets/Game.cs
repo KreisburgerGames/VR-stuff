@@ -221,6 +221,7 @@ public class Game : MonoBehaviour
 
     private IEnumerator ReturnToPosition(State toState)
     {
+        if(pump.xRGrab.attachTransform != pump.primaryGrabPos) pump.xRGrab.attachTransform = pump.primaryGrabPos;
         float timer = 0f;
         yield return new WaitForSeconds(1f);
         shotgunGrab.enabled = false;
