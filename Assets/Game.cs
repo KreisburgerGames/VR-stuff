@@ -90,9 +90,18 @@ public class Game : MonoBehaviour
             if(state == State.Start)
             {
                 // Choose between 4 and 8 shells but slightly influenced off what round it is
-                int min = shellsMin + round; int max = shellsMax + round;
-                min = Mathf.Clamp(min, 3, 4);
-                max = Mathf.Clamp(max, 4, 8);
+                int min = 0, max = 0;
+                int floored = Mathf.FloorToInt(round / 2f);
+                if(stage == 1)
+                {
+                    min = shellsMin; max = shellsMax + floored;
+                }
+                else
+                {
+                    min = shellsMin + floored; max = shellsMax + floored;
+                    min = Mathf.Clamp(min, 3, 4);
+                    max = Mathf.Clamp(max, 4, 8);
+                }
                 int shellGen = Random.Range(min, max + 1);
                 for(int i = 0; i < shellGen; i++)
                 {
@@ -221,6 +230,7 @@ public class Game : MonoBehaviour
 
     private IEnumerator ReturnToPosition(State toState)
     {
+        if(pump.barrelCut) yield return StartCoroutine(pump.ResetBarrel());
         if(pump.xRGrab.attachTransform != pump.primaryGrabPos) pump.xRGrab.attachTransform = pump.primaryGrabPos;
         float timer = 0f;
         yield return new WaitForSeconds(1f);

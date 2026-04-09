@@ -5,9 +5,10 @@ public class HandsawItem : MonoBehaviour
 {
     private Coroutine openCloseCoroutine;
     private Item item;
-    private bool isOpened;
+    public bool isOpened { get; private set; }
     public GameObject blade;
     public float openCloseTime = .5f;
+    public bool used = false;
     
     void Start()
     {

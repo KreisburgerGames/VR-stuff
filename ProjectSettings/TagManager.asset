@@ -13,6 +13,7 @@ TagManager:
   - Table
   - Box
   - Handsaw
+  - CutPoint
   layers:
   - Default
   - TransparentFX

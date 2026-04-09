@@ -7,6 +7,8 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 using UnityEngine.SceneManagement;
 using System.Net.NetworkInformation;
+using System.Collections;
+using System.Threading;
 
 public class Pump : MonoBehaviour
 {
@@ -39,6 +41,9 @@ public class Pump : MonoBehaviour
     public InputActionReference offsetButton;
     private bool checking = false;
     private bool skipping = false;
+    public GameObject barrelEnd;
+    public bool barrelCut = false;
+    public Transform bodyTransform;
 
     void Start()
     {
@@ -48,6 +53,57 @@ public class Pump : MonoBehaviour
         nextShell.SetActive(false);
         xRGrab.attachTransform = primaryGrabPos;
         offsetButton.action.started += ToggleGrabPos;
+    }
+
+    private IEnumerator FadeOutBarrel()
+    {
+        yield return new WaitForSeconds(2f);
+        float timer = 0f;
+        float fadeDuration = 1f;
+        Material barrelMaterial = barrelEnd.GetComponent<MeshRenderer>().material;
+        while (timer < fadeDuration)
+        {
+            Color color = barrelMaterial.color;
+            color.a = Mathf.Lerp(1f, 0f, timer / fadeDuration);
+            barrelMaterial.color = color;
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        barrelEnd.SetActive(false);
+    }
+
+    public void CutBarrel()
+    {
+        if(barrelCut) return;
+        barrelCut = true;
+        barrelEnd.transform.parent = null;
+        barrelEnd.AddComponent<Rigidbody>();
+        barrelEnd.GetComponent<CapsuleCollider>().enabled = true;
+        StartCoroutine(FadeOutBarrel());
+    }
+
+    public IEnumerator ResetBarrel()
+    {
+        barrelCut = false;
+        barrelEnd.transform.parent = bodyTransform;
+        barrelEnd.transform.localPosition = Vector3.zero;
+        barrelEnd.transform.localEulerAngles = Vector3.zero;
+        barrelEnd.GetComponent<CapsuleCollider>().enabled = false;
+        Destroy(barrelEnd.GetComponent<Rigidbody>());
+        float timer = 0f;
+        float fadeDuration = 1f;
+        Material barrelMaterial = barrelEnd.GetComponent<MeshRenderer>().material;
+        yield return new WaitForSeconds(1f);
+        barrelEnd.SetActive(true);
+        while (timer < fadeDuration)
+        {
+            Color color = barrelMaterial.color;
+            color.a = Mathf.Lerp(0f, 1f, timer / fadeDuration);
+            barrelMaterial.color = color;
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        yield return new WaitForSeconds(1f);
     }
     
     public void UnlockForCheck()
@@ -114,12 +170,14 @@ public class Pump : MonoBehaviour
                     else
                     {
                         game.playerLives -= 1;
+                        if(barrelCut) game.playerLives -= 1; // Extra damage if the barrel is cut
                         if (game.playerLives == 0) UnityEngine.SceneManagement.SceneManager.LoadScene("SampleScene");
                     }
                 }
                 else if(hit.collider.gameObject.tag == "Dealer")
                 {
                     game.enemyLives -= 1;
+                    if(barrelCut) game.enemyLives -= 1;
                 }
             }
             else return;
